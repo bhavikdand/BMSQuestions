@@ -1,6 +1,5 @@
 package com.example.ecom.repositories;
 
 
-public interface UserRepository{
-
+public interface OrderDetailRepository {
 }

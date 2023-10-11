@@ -1,32 +1,31 @@
-# Create a show for Book My Show
+# Implement place order functionality for an e-commerce platform
 
 ## Problem Statement
 
-You are building book my show. As a part of this system, you need to expose a functionality using which theatre admins can create a show. Once this show has been created, users will be able to book tickets for this show on the platform.
+You are building an e-commerce platform. As a part of this system, you need to expose a functionality using which users can place an order for products.
 
 ## Requirements
-1. The request to book a ticket will contain the following things:
-   * Movie ID - The ID of the movie which is being shown.
-   * User ID - The ID of the user who is creating the show.
-   * Screen ID - The ID of the screen where the show is being hosted.
-   * PricingConfig (List<Pair<SeatType, Double>) - The price of each seat type for this show.
-   * Start Time - The start time of the show.
-   * End Time - The end time of the show.
-   * Date - The date on which the show is being hosted.
-   * Feature List - The list of features that are supported by this show.
-2. This functionality should be only accessible to the theatre admin.
-3. Every screen has supported features like 2D, 3D, Dolby vision etc. The show that is going to be scheduled on a screen should support all or subset of these features. Example scenarios:
-   * If a screen is a 2D screen, then a 3D show cannot be scheduled on it.
-   * If a screen supports 3D, 2D, Dolby atmos, then a show which supports 2D and Dolby atmos can be scheduled on it.
-4. The functionality should do basic data validation checks ex. The start time should be before the end time.
-5. Once this functionality executes successfully, we should store show details, seats related details for this show and pricing details for this show in the database.
+1. The request to place an order will contain the following information:
+   * User id of the user who wants to place the order.
+   * List of product ids and their quantities (List<Pair<Integer, Integer>>, the pair's key is the product id and value is the quantity) which the user wants to order.
+   * Address id of the user's address where the order needs to be delivered.
+2. Before creating an order we need to check the following things:
+   * Does the user exist in the system? If not then we need to throw an exception.
+   * Does the address exist in the system? If not then we need to throw an exception.
+   * Does the address belong to the user? If not then we need to throw an exception.
+   * Do all the products have enough quantity to fill the order? If not then we need to throw an exception.
+   * If all the above checks pass then we need to update the inventory with the updated quantity, create an order and return the order details.
+3. We should handle for concurrent requests, i.e. we should not overbook the inventory. We should allow concurrent requests to place an order only if the inventory has enough quantity to fulfill the order.
+4. Few products might be facing a lot of demand but their supply is limited eg. iPhones. For such products we will store max number of quantity per order that a user can order. Details for such products will be stored in the `high_demand_products` table.
 
 
 ## Instructions
-1. Carefully look at `CreateShowRequestDto` and `CreateShowResponseDto` classes. These classes represent the request and response of the functionality which we want to implement.
+1. Carefully look at `PlaceOrderRequestDto` and `PlaceOrderResponseDto` classes. These classes represent the request and response of the functionality which we want to implement.
 2. Carefully examine the models package to understand the database schema.
-3. Implement the `createShow` method inside the `ShowController`.
-4. Implement the `ShowService` interface and fix the repository interfaces.
+3. Implement the `placeOrder` method inside the `OrderController`.
+4. Implement the `OrderService` interface and fix the repository interfaces.
 5. You might need to add annotations like `@Service`, `@Autowired`, `@Entity` etc. to make the solution work. You might also need to handle cardinality between the models.
 6. We will be using H2 database which is an in-memory SQL database. You do not need to implement any database related code. You just need to use the repository interfaces to interact with the database.
-7. Carefully examine the `ShowControllerTest` class to understand how the controller will be tested. Your solution should pass all the tests in this class.
+7. Carefully examine the `TestOrderController` class to understand how the controller will be tested. Your solution should pass all the tests in this class.
+8. Implement the necessary exceptions in the `exceptions` package.
+9. Do not modify the `OrderService` interface's placeOrder method signature. You can add additional methods to the interface if you want.

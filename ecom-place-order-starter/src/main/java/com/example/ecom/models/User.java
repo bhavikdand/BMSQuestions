@@ -2,11 +2,12 @@ package com.example.ecom.models;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class User extends BaseModel{
-
     private String name;
     private String email;
-    private String password;
-    private UserType userType;
+    private List<Address> addresses;
+    private List<Order> orders;
 }
