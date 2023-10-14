@@ -114,10 +114,10 @@ public class TestOrderController {
         highDemandProduct = highDemandProductRepository.save(highDemandProduct);
 
     }
-    
+
 
     @AfterEach
-    public void manualCleanup(){
+    public void cleanUp(){
         List<Order> orders = orderRepository.findAll();
         for(Order order: orders){
             order.setOrderDetails(null);
@@ -146,6 +146,7 @@ public class TestOrderController {
 
         PlaceOrderResponseDto placeOrderResponseDto = orderController.placeOrder(placeOrderRequestDto);
         assertEquals(ResponseStatus.SUCCESS, placeOrderResponseDto.getStatus(), "Status should be success");
+        assertEquals(OrderStatus.PLACED, placeOrderResponseDto.getOrder().getOrderStatus(), "Order status should be placed");
         assertEquals(3, placeOrderResponseDto.getOrder().getOrderDetails().size(), "There should be 3 items in the order");
 
         orderRepository.findById(placeOrderResponseDto.getOrder().getId()).ifPresent(order -> {

@@ -105,6 +105,7 @@ public class OrderServiceImpl implements OrderService{
         order.setUser(user);
         order.setDeliveryAddress(address);
         order.setOrderDetails(orderDetailsList);
+        order.setOrderStatus(OrderStatus.PLACED);
         order = orderRepository.save(order);
 
         for (OrderDetail orderDetail: orderDetailsList) {

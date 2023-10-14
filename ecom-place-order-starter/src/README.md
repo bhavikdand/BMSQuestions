@@ -14,7 +14,7 @@ You are building an e-commerce platform. As a part of this system, you need to e
    * Does the address exist in the system? If not then we need to throw an exception.
    * Does the address belong to the user? If not then we need to throw an exception.
    * Do all the products have enough quantity to fill the order? If not then we need to throw an exception.
-   * If all the above checks pass then we need to update the inventory with the updated quantity, create an order and return the order details.
+   * If all the above checks pass, then we need to update the inventory with the updated quantity, create an order (with status as placed) and return the order details.
 3. We should handle for concurrent requests, i.e. we should not overbook the inventory. We should allow concurrent requests to place an order only if the inventory has enough quantity to fulfill the order.
 4. Few products might be facing a lot of demand but their supply is limited eg. iPhones. For such products we will store max number of quantity per order that a user can order. Details for such products will be stored in the `high_demand_products` table.
 

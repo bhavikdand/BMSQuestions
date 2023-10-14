@@ -16,4 +16,5 @@ public class Order extends BaseModel{
     private Address deliveryAddress;
     @OneToMany
     private List<OrderDetail> orderDetails;
+    private OrderStatus orderStatus;
 }
