@@ -6,12 +6,17 @@ import com.example.ecom.repositories.InventoryRepository;
 import com.example.ecom.repositories.NotificationRepository;
 import com.example.ecom.repositories.ProductRepository;
 import com.example.ecom.repositories.UserRepository;
+import com.example.ecom.services.InventoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -256,6 +261,23 @@ public class TestControllers {
         assertNotNull(deregisterUserForNotificationResponseDto, "Response should not be null");
         assertEquals(ResponseStatus.FAILURE, deregisterUserForNotificationResponseDto.getResponseStatus(), "Response status should be failure");
         assertEquals(1, notificationRepository.count(), "Notification should not be deleted");
+    }
+
+    @Test
+    public void testUpdateStockWithNotifications_UsesAdapter(){
+        Reflections reflections = new Reflections(InventoryService.class.getPackageName(), new SubTypesScanner(false));
+        Set<Class<? extends InventoryService>> implementations = reflections.getSubTypesOf(InventoryService.class);
+        assertEquals(1, implementations.size(), "Only one implementation of NotificationService should exist. Please modify the existing implementation instead of creating a new one.");
+        Class<? extends InventoryService> notificationServiceClass = implementations.iterator().next();
+        Field[] declaredFields = notificationServiceClass.getDeclaredFields();
+        boolean emailAdapterFound = false;
+        for (Field declaredField : declaredFields) {
+            if(declaredField.getName().toLowerCase().contains("adapter")){
+                emailAdapterFound = true;
+                break;
+            }
+        }
+        assertTrue(emailAdapterFound, "We should use Adapter design pattern to send emails. Please create an adapter for sending emails and use it in the InventoryService implementation.");
     }
 
 
