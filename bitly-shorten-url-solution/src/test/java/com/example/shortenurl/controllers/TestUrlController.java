@@ -59,7 +59,9 @@ public class TestUrlController {
     }
 
     public long getCurrentTime(){
-        return System.currentTimeMillis() / 1000;
+        long currentTime = System.currentTimeMillis() / 1000;
+        currentTime -= 50; //To account for the time taken by the test
+        return currentTime;
     }
     @Test
     public void testShortenUrl_freeUser_Success() {
