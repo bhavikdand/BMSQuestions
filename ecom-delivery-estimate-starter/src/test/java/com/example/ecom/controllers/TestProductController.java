@@ -5,14 +5,19 @@ import com.example.ecom.dtos.DeliveryEstimateResponseDto;
 import com.example.ecom.dtos.ResponseStatus;
 import com.example.ecom.models.*;
 import com.example.ecom.repositories.*;
+import com.example.ecom.services.ProductService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -175,6 +180,23 @@ public class TestProductController {
         assertNotNull(deliveryEstimateResponseDto, "Response should not be null");
         assertEquals(ResponseStatus.FAILURE, deliveryEstimateResponseDto.getResponseStatus(), "Response status should be failure");
         assertNull(deliveryEstimateResponseDto.getExpectedDeliveryDate(), "Expected delivery date should be null");
+    }
+
+    @Test
+    public void testEstimateDeliveryTime_UsesAdapter(){
+        Reflections reflections = new Reflections(ProductService.class.getPackageName(), new SubTypesScanner(false));
+        Set<Class<? extends ProductService>> implementations = reflections.getSubTypesOf(ProductService.class);
+        assertEquals(1, implementations.size(), "Only one implementation of NotificationService should exist. Please modify the existing implementation instead of creating a new one.");
+        Class<? extends ProductService> notificationServiceClass = implementations.iterator().next();
+        Field[] declaredFields = notificationServiceClass.getDeclaredFields();
+        boolean emailAdapterFound = false;
+        for (Field declaredField : declaredFields) {
+            if(declaredField.getName().toLowerCase().contains("adapter")){
+                emailAdapterFound = true;
+                break;
+            }
+        }
+        assertTrue(emailAdapterFound, "We should use Adapter design pattern to send emails. Please create an adapter for sending emails and use it in the InventoryService implementation.");
     }
 
 
