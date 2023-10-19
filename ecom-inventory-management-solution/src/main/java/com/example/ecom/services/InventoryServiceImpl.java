@@ -1,6 +1,7 @@
 package com.example.ecom.services;
 
 import com.example.ecom.exceptions.ProductNotFoundException;
+import com.example.ecom.exceptions.UnAuthorizedAccessException;
 import com.example.ecom.exceptions.UserNotFoundException;
 import com.example.ecom.models.Inventory;
 import com.example.ecom.models.Product;
@@ -29,10 +30,10 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
-    public Inventory createOrUpdateInventory(int userId, int productId, int quantity) throws ProductNotFoundException, UserNotFoundException {
+    public Inventory createOrUpdateInventory(int userId, int productId, int quantity) throws ProductNotFoundException, UserNotFoundException, UnAuthorizedAccessException {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
         if(!user.getUserType().equals(UserType.ADMIN)){
-            throw new UserNotFoundException("User not found");
+            throw new UnAuthorizedAccessException("Only admins can create or update inventory");
         }
         Optional<Inventory> inventoryOptional = inventoryRepository.findByProductId(productId);
         if(inventoryOptional.isEmpty()){
@@ -49,10 +50,10 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
-    public void deleteInventory(int userId, int productId) throws UserNotFoundException {
+    public void deleteInventory(int userId, int productId) throws UserNotFoundException, UnAuthorizedAccessException {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
         if(!user.getUserType().equals(UserType.ADMIN)){
-            throw new UserNotFoundException("User not found");
+            throw new UnAuthorizedAccessException("Only admins can delete inventory");
         }
         Optional<Inventory> inventoryOptional = inventoryRepository.findByProductId(productId);
         if(inventoryOptional.isPresent()){
