@@ -7,7 +7,5 @@ import com.example.ecom.exceptions.UserNotFoundException;
 import com.example.ecom.models.Order;
 
 public interface OrderService {
-
-
     public Order cancelOrder(int orderId, int userId)  throws UserNotFoundException, OrderNotFoundException, OrderDoesNotBelongToUserException, OrderCannotBeCancelledException;
 }
