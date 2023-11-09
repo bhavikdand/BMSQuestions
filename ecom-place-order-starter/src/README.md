@@ -26,6 +26,5 @@ You are building an e-commerce platform. As a part of this system, you need to e
 4. Implement the `OrderService` interface and fix the repository interfaces.
 5. You might need to add annotations like `@Service`, `@Autowired`, `@Entity` etc. to make the solution work. You might also need to handle cardinality between the models.
 6. We will be using H2 database which is an in-memory SQL database. You do not need to implement any database related code. You just need to use the repository interfaces to interact with the database.
-7. Carefully examine the `TestOrderController` class to understand how the controller will be tested. Your solution should pass all the tests in this class.
-8. Implement the necessary exceptions in the `exceptions` package.
-9. Do not modify the `OrderService` interface's placeOrder method signature. You can add additional methods to the interface if you want.
+7. Implement the necessary exceptions in the `exceptions` package.
+8. Do not modify the `OrderService` interface's placeOrder method signature. You can add additional methods to the interface if you want.
