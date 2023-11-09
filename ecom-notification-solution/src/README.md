@@ -42,7 +42,6 @@ The integration with SendGrid should be as loosely coupled as possible. We shoul
 5. Modify the implementation of `InventoryService` interface to notify users when a product becomes available.
 6. You might need to add annotations like `@Service`, `@Autowired`, `@Entity` etc. to make the solution work. You might also need to handle cardinality between the models.
 7. We will be using H2 database which is an in-memory SQL database. You do not need to implement any database related code. You just need to use the repository interfaces to interact with the database.
-8. Carefully examine the `TestControllers` class to understand how the controller will be tested. Your solution should pass all the tests in this class.
-9. Implement the necessary exceptions in the `exceptions` package.
-10. Do not modify the `NotificationService`, `InventoryService` interface's method signatures. You can add additional methods to the interface if you want.
-11. Refer the libraries package to understand how to use SendGrid.
+8. Implement the necessary exceptions in the `exceptions` package.
+9. Do not modify the `NotificationService`, `InventoryService` interface's method signatures. You can add additional methods to the interface if you want.
+10. Refer the libraries package to understand how to use SendGrid.
