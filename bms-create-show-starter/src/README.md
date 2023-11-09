@@ -29,4 +29,3 @@ You are building book my show. As a part of this system, you need to expose a fu
 4. Implement the `ShowService` interface and fix the repository interfaces.
 5. You might need to add annotations like `@Service`, `@Autowired`, `@Entity` etc. to make the solution work. You might also need to handle cardinality between the models.
 6. We will be using H2 database which is an in-memory SQL database. You do not need to implement any database related code. You just need to use the repository interfaces to interact with the database.
-7. Carefully examine the `ShowControllerTest` class to understand how the controller will be tested. Your solution should pass all the tests in this class.
