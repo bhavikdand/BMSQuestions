@@ -41,4 +41,3 @@ Response for getting average rating of a movie will contain:
 4. Implement the `RatingsService` interface and fix the repository interfaces.
 5. You might need to add annotations like `@Service`, `@Autowired`, `@Entity` etc. to make the solution work. You might also need to handle cardinality between the models.
 6. We will be using H2 database which is an in-memory SQL database. You do not need to implement any database related code. You just need to use the repository interfaces to interact with the database.
-7. Carefully examining the `TestRatingsController` to understand how your solution will be tested.
