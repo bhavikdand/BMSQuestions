@@ -45,5 +45,4 @@ The response will contain the following information:
 4. Implement the `ProductService` interface and fix the repository interfaces.
 5. You might need to add annotations like `@Service`, `@Autowired`, `@Entity` etc. to make the solution work. You might also need to handle cardinality between the models.
 6. We will be using H2 database which is an in-memory SQL database. You do not need to implement any database related code. You just need to use the repository interfaces to interact with the database.
-7. Carefully examine the `TestProductController` class to understand how the controller will be tested. Your solution should pass all the tests in this class.
-8. Refer the libraries package to understand how to use Google Maps api.
+7. Refer the libraries package to understand how to use Google Maps api.
