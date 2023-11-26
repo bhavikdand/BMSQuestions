@@ -1,4 +1,4 @@
 package com.example.qcommerce.repositories;
 
-public interface TaskRepository{
+public interface BatchedTaskRepository {
 }

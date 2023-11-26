@@ -7,5 +7,5 @@ import lombok.Data;
 public class Task extends BaseModel{
     private long customerId;
     @Embedded
-    private Location pickupLocation;
+    private Location dropLocation;
 }
