@@ -5,7 +5,7 @@ import com.example.qcommerce.models.Location;
 
 import java.util.List;
 
-public interface BuildBatchedTaskService {
+public interface BatchedTaskService {
 
     public List<Location> buildRoute(long batchedTaskId) throws BatchedTaskNotFoundException;
 }

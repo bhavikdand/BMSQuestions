@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class BuildBatchedTaskServiceImpl implements BuildBatchedTaskService{
+public class BatchedTaskServiceImpl implements BatchedTaskService {
 
     private BatchedTaskRepository batchedTaskRepository;
     private MapsAdapter mapsAdapter;
 
     @Autowired
-    public BuildBatchedTaskServiceImpl(BatchedTaskRepository batchedTaskRepository, MapsAdapter mapsAdapter) {
+    public BatchedTaskServiceImpl(BatchedTaskRepository batchedTaskRepository, MapsAdapter mapsAdapter) {
         this.batchedTaskRepository = batchedTaskRepository;
         this.mapsAdapter = mapsAdapter;
     }
