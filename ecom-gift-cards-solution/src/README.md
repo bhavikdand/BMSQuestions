@@ -1,4 +1,4 @@
-# Implement place order functionality for an e-commerce platform
+# Implement create/redeem gift cards functionality for an e-commerce platform
 
 ## Problem Statement
 
