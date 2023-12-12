@@ -1,14 +1,12 @@
 package com.example.scaler.controllers;
 
+import com.example.scaler.dtos.AccessLectureRequestDto;
+import com.example.scaler.dtos.AccessLectureResponseDto;
 import com.example.scaler.dtos.ResponseStatus;
-import com.example.scaler.dtos.ScheduleLectureRequestDto;
-import com.example.scaler.dtos.ScheduleLecturesResponseDto;
-import com.example.scaler.models.ScheduledLecture;
+import com.example.scaler.models.LearnerProgress;
 import com.example.scaler.services.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
 
 @Controller
 public class LectureController {
@@ -20,12 +18,12 @@ public class LectureController {
         this.lectureService = lectureService;
     }
 
-    public ScheduleLecturesResponseDto scheduleLectures(ScheduleLectureRequestDto requestDto) {
-        ScheduleLecturesResponseDto responseDto = new ScheduleLecturesResponseDto();
+    public AccessLectureResponseDto accessLecture(AccessLectureRequestDto requestDto){
+        AccessLectureResponseDto responseDto = new AccessLectureResponseDto();
         try{
-            List<ScheduledLecture> scheduledLectures = lectureService.scheduleLectures(requestDto.getLectureIds(), requestDto.getInstructorId(), requestDto.getBatchId());
-            responseDto.setScheduledLectures(scheduledLectures);
+            LearnerProgress learnerProgress = lectureService.accessLecture(requestDto.getLearnerId(), requestDto.getScheduledLectureId(), requestDto.getLectureLink());
             responseDto.setResponseStatus(ResponseStatus.SUCCESS);
+            responseDto.setLearnerProgress(learnerProgress);
         } catch (Exception e){
             responseDto.setResponseStatus(ResponseStatus.FAILURE);
         }

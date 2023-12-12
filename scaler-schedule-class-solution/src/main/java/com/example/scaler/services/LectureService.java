@@ -1,13 +1,10 @@
 package com.example.scaler.services;
 
-import com.example.scaler.exceptions.InvalidBatchException;
-import com.example.scaler.exceptions.InvalidInstructorException;
 import com.example.scaler.exceptions.InvalidLectureException;
-import com.example.scaler.models.ScheduledLecture;
-
-import java.util.List;
+import com.example.scaler.exceptions.UnAuthorizedException;
+import com.example.scaler.models.LearnerProgress;
 
 public interface LectureService {
 
-    List<ScheduledLecture> scheduleLectures(List<Long> lectureIds, Long instructorId, Long batchId) throws InvalidLectureException, InvalidInstructorException, InvalidBatchException;
+    LearnerProgress accessLecture(long learnerId, long scheduledLectureId, String lectureLink) throws InvalidLectureException, UnAuthorizedException;
 }
