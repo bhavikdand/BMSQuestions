@@ -4,10 +4,10 @@ import com.example.scaler.models.BatchLearner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface BatchLearnerRepository extends JpaRepository<BatchLearner, Long> {
 
-    Optional<BatchLearner> findByBatchIdAndLearnerId(Long batchId, Long learnerId);
+    List<BatchLearner> findByLearnerIdOrderByEntryDate(Long learnerId);
 }
