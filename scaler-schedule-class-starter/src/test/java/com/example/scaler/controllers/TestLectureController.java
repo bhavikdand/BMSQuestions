@@ -1,8 +1,8 @@
 package com.example.scaler.controllers;
 
+import com.example.scaler.dtos.AccessLectureRequestDto;
+import com.example.scaler.dtos.AccessLectureResponseDto;
 import com.example.scaler.dtos.ResponseStatus;
-import com.example.scaler.dtos.ScheduleLectureRequestDto;
-import com.example.scaler.dtos.ScheduleLecturesResponseDto;
 import com.example.scaler.models.*;
 import com.example.scaler.repositories.BatchRepository;
 import com.example.scaler.repositories.InstructorRepository;
@@ -19,9 +19,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @SpringBootTest
 public class TestLectureController {
 
@@ -33,33 +30,36 @@ public class TestLectureController {
     private LectureRepository lectureRepository;
     @Autowired
     private ScheduledLectureRepository scheduledLectureRepository;
+    @Autowired
+    private LearnerRepository learnerRepository;
+    @Autowired
+    private LearnerProgressRepository learnerProgressRepository;
+    @Autowired
+    private BatchLearnerRepository batchLearnerRepository;
 
     @Autowired
     private LectureController lectureController;
 
     private List<Long> lectureIds = new ArrayList<>();
     private Batch batch;
-
+    private Learner learner;
     private Instructor instructor;
+    private ScheduledLecture scheduledLecture1, scheduledLecture2;
 
     @BeforeEach
     public void setup(){
-        scheduledLectureRepository.deleteAll();
-        lectureRepository.deleteAll();
-        batchRepository.deleteAll();
-        instructorRepository.deleteAll();
-
-
         batch = new Batch();
         batch.setName("Batch 1");
         batch.setSchedule(Schedule.MWF_MORNING);
         batch = batchRepository.save(batch);
 
+        learner = new Learner();
+        learner.setName("Learner 1");
+        learner = learnerRepository.save(learner);
 
         instructor = new Instructor();
         instructor.setName("Instructor 1");
         instructor = instructorRepository.save(instructor);
-
 
         Lecture lecture_1 = new Lecture();
         lecture_1.setName("SQL: Schema Design - 1");
@@ -95,7 +95,6 @@ public class TestLectureController {
         lecture4 = lectureRepository.save(lecture4);
         lectureIds.add(lecture4.getId());
 
-
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DATE, 6);
         calendar.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -108,15 +107,14 @@ public class TestLectureController {
         calendar.add(Calendar.MINUTE, 30);
         Date endDate = calendar.getTime();
 
-
-        ScheduledLecture scheduledLecture1 = new ScheduledLecture();
-        scheduledLecture1.setBatch(batch);
+        scheduledLecture1 = new ScheduledLecture();
+        scheduledLecture1.setBatch(this.batch);
         scheduledLecture1.setInstructor(instructor);
         scheduledLecture1.setLecture(lecture_1);
         scheduledLecture1.setLectureLink(DronaUtils.generateUniqueLectureLink());
         scheduledLecture1.setLectureStartTime(startDate);
         scheduledLecture1.setLectureEndTime(endDate);
-        scheduledLectureRepository.save(scheduledLecture1);
+        scheduledLecture1 = scheduledLectureRepository.save(scheduledLecture1);
 
         calendar.add(Calendar.DATE, 2);
         calendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -127,101 +125,123 @@ public class TestLectureController {
         calendar.add(Calendar.MINUTE, 30);
         endDate = calendar.getTime();
 
-        ScheduledLecture scheduledLecture2 = new ScheduledLecture();
-        scheduledLecture2.setBatch(batch);
+        scheduledLecture2 = new ScheduledLecture();
+        scheduledLecture2.setBatch(this.batch);
         scheduledLecture2.setInstructor(instructor);
         scheduledLecture2.setLecture(lecture_0);
         scheduledLecture2.setLectureLink(DronaUtils.generateUniqueLectureLink());
         scheduledLecture2.setLectureStartTime(startDate);
         scheduledLecture2.setLectureEndTime(endDate);
-        scheduledLectureRepository.save(scheduledLecture2);
+        scheduledLecture2 = scheduledLectureRepository.save(scheduledLecture2);
     }
 
     @Test
-    public void testScheduleLecture_Success(){
-        ScheduleLectureRequestDto requestDto = new ScheduleLectureRequestDto();
-        requestDto.setBatchId(batch.getId());
-        requestDto.setInstructorId(instructor.getId());
-        requestDto.setLectureIds(lectureIds);
+    public void testAccessLecture_LearnerNotFound(){
+        AccessLectureRequestDto requestDto = new AccessLectureRequestDto();
+        requestDto.setLearnerId(100);
+        requestDto.setScheduledLectureId(1);
+        requestDto.setLectureLink(null);
+        AccessLectureResponseDto responseDto = lectureController.accessLecture(requestDto);
+        assertEquals(ResponseStatus.FAILURE, responseDto.getResponseStatus());
+    }
 
-        ScheduleLecturesResponseDto responseDto = lectureController.scheduleLectures(requestDto);
+    @Test
+    public void testAccessLecture_LectureNotFound_ViaId(){
+        AccessLectureRequestDto requestDto = new AccessLectureRequestDto();
+        requestDto.setLearnerId(learner.getId());
+        requestDto.setScheduledLectureId(100);
+        requestDto.setLectureLink(null);
+        AccessLectureResponseDto responseDto = lectureController.accessLecture(requestDto);
+        assertEquals(ResponseStatus.FAILURE, responseDto.getResponseStatus());
+    }
 
-        assertNotNull(responseDto, "Response should not be null");
-        assertEquals(responseDto.getResponseStatus(), ResponseStatus.SUCCESS);
-        assertNotNull(responseDto.getScheduledLectures(), "Scheduled lectures should not be null");
+    @Test
+    public void testAccessLecture_LectureNotFound_ViaLink(){
+        AccessLectureRequestDto requestDto = new AccessLectureRequestDto();
+        requestDto.setLearnerId(learner.getId());
+        requestDto.setLectureLink("https://www.youtube.com/watch?v=1");
+        AccessLectureResponseDto responseDto = lectureController.accessLecture(requestDto);
+        assertEquals(ResponseStatus.FAILURE, responseDto.getResponseStatus());
+    }
 
-        List<ScheduledLecture> scheduledLectures = responseDto.getScheduledLectures();
-        assertEquals(scheduledLectures.size(), lectureIds.size(), "Scheduled lectures size should be equal to lecture ids size");
+    @Test
+    public void testAccessLecture_LearnerNotAuthorized_LearnerNotInBatch(){
+        Learner learner1 = new Learner();
+        learner1.setName("Learner 2");
+        learner1 = learnerRepository.save(learner1);
+        AccessLectureRequestDto requestDto = new AccessLectureRequestDto();
+        requestDto.setLearnerId(learner1.getId());
+        requestDto.setScheduledLectureId(scheduledLecture1.getId());
+        requestDto.setLectureLink(null);
+        AccessLectureResponseDto responseDto = lectureController.accessLecture(requestDto);
+        assertEquals(ResponseStatus.FAILURE, responseDto.getResponseStatus());
+    }
+
+    @Test
+    public void testAccessLecture_LearnerNotAuthorized_LearnerInBatchButJoinedAfterTheLectureHappened(){
+        Learner learner1 = new Learner();
+        learner1.setName("Learner 2");
+        learner1 = learnerRepository.save(learner1);
+        BatchLearner batchLearner = new BatchLearner();
+        batchLearner.setBatch(batch);
+        batchLearner.setLearner(learner1);
+        batchLearner.setEntryDate(new Date());
+        batchLearnerRepository.save(batchLearner);
+        AccessLectureRequestDto requestDto = new AccessLectureRequestDto();
+        requestDto.setLearnerId(learner1.getId());
+        requestDto.setScheduledLectureId(scheduledLecture1.getId());
+        requestDto.setLectureLink(null);
+        AccessLectureResponseDto responseDto = lectureController.accessLecture(requestDto);
+        assertEquals(ResponseStatus.FAILURE, responseDto.getResponseStatus());
+    }
+
+    @Test
+    public void testAccessLecture_LearnerNotAuthorized_LearnerInBatchButLeftBeforeTheLectureTheLectureHappened(){
+        Learner learner1 = new Learner();
+        learner1.setName("Learner 2");
+        learner1 = learnerRepository.save(learner1);
+        BatchLearner batchLearner = new BatchLearner();
+        batchLearner.setBatch(batch);
+        batchLearner.setLearner(learner1);
+        batchLearner.setEntryDate(new Date(1698841910));
+        batchLearner.setExitDate(new Date(1701347510));
+        batchLearnerRepository.save(batchLearner);
+        AccessLectureRequestDto requestDto = new AccessLectureRequestDto();
+        requestDto.setLearnerId(learner1.getId());
+        requestDto.setScheduledLectureId(scheduledLecture1.getId());
+        requestDto.setLectureLink(null);
+        AccessLectureResponseDto responseDto = lectureController.accessLecture(requestDto);
+        assertEquals(ResponseStatus.FAILURE, responseDto.getResponseStatus());
+    }
+
+    @Test
+    public void testAccessLecture_Success(){
+
         Calendar calendar = Calendar.getInstance();
-        for(int i = 0; i < scheduledLectures.size(); i++){
-            ScheduledLecture scheduledLecture = scheduledLectures.get(i);
-            assertEquals(scheduledLecture.getBatch().getId(), batch.getId(), "Lecture should be scheduled for the same batch as the request batch id");
-            assertEquals(scheduledLecture.getInstructor().getId(), instructor.getId(), "Instructor should be the same as the request instructor id");
-            assertEquals(scheduledLecture.getLecture().getId(), lectureIds.get(i), "Lecture id should be equal");
-            assertNotNull(scheduledLecture.getLectureLink(), "Lecture link should not be null");
-            assertNotNull(scheduledLecture.getLectureStartTime(), "Lecture start time should not be null");
-            assertNotNull(scheduledLecture.getLectureEndTime(), "Lecture end time should not be null");
-            calendar.setTime(scheduledLecture.getLectureStartTime());
-            assertEquals(calendar.get(Calendar.HOUR_OF_DAY), 7, "Lecture start time hour should be 7");
-            if(calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+        calendar.set(Calendar.DATE, 6);
+        calendar.set(Calendar.MONTH, Calendar.NOVEMBER);
+        calendar.set(Calendar.YEAR, 2023);
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        Date startDate = calendar.getTime();
 
-            } else {
-                throw new AssertionError("Lecture should be scheduled for Monday, Wednesday or Friday only");
-            }
-        }
+
+        Learner learner1 = new Learner();
+        learner1.setName("Learner 2");
+        learner1 = learnerRepository.save(learner1);
+        BatchLearner batchLearner = new BatchLearner();
+        batchLearner.setBatch(batch);
+        batchLearner.setLearner(learner1);
+        batchLearner.setEntryDate(startDate);
+        batchLearnerRepository.save(batchLearner);
+        AccessLectureRequestDto requestDto = new AccessLectureRequestDto();
+        requestDto.setLearnerId(learner1.getId());
+        requestDto.setScheduledLectureId(scheduledLecture1.getId());
+        requestDto.setLectureLink(null);
+        AccessLectureResponseDto responseDto = lectureController.accessLecture(requestDto);
+        assertEquals(ResponseStatus.SUCCESS, responseDto.getResponseStatus());
+        assertEquals(0, responseDto.getLearnerProgress().getCompletedTimeInSecs());
     }
 
-    @Test
-    public void testScheduleLecture_InvalidLectureIds_1_Failure(){
-        ScheduleLectureRequestDto requestDto = new ScheduleLectureRequestDto();
-        requestDto.setBatchId(batch.getId());
-        requestDto.setInstructorId(instructor.getId());
-        requestDto.setLectureIds(List.of(100000L, 1000001L));
-
-        ScheduleLecturesResponseDto responseDto = lectureController.scheduleLectures(requestDto);
-
-        assertNotNull(responseDto, "Response should not be null");
-        assertEquals(responseDto.getResponseStatus(), ResponseStatus.FAILURE, "Response status should be failure");
-    }
-
-
-    @Test
-    public void testScheduleLecture_InvalidLectureIds_2_Failure(){
-        ScheduleLectureRequestDto requestDto = new ScheduleLectureRequestDto();
-        requestDto.setBatchId(batch.getId());
-        requestDto.setInstructorId(instructor.getId());
-        lectureIds.add(100000L);
-        requestDto.setLectureIds(lectureIds);
-
-        ScheduleLecturesResponseDto responseDto = lectureController.scheduleLectures(requestDto);
-
-        assertNotNull(responseDto, "Response should not be null");
-        assertEquals(responseDto.getResponseStatus(), ResponseStatus.FAILURE, "Response status should be failure");
-    }
-
-    @Test
-    public void testScheduleLecture_InvalidBatchId_Failure(){
-        ScheduleLectureRequestDto requestDto = new ScheduleLectureRequestDto();
-        requestDto.setBatchId(10000L);
-        requestDto.setInstructorId(instructor.getId());
-        requestDto.setLectureIds(lectureIds);
-
-        ScheduleLecturesResponseDto responseDto = lectureController.scheduleLectures(requestDto);
-
-        assertNotNull(responseDto, "Response should not be null");
-        assertEquals(responseDto.getResponseStatus(), ResponseStatus.FAILURE, "Response status should be failure");
-    }
-
-    @Test
-    public void testScheduleLecture_InvalidInstructorId_Failure(){
-        ScheduleLectureRequestDto requestDto = new ScheduleLectureRequestDto();
-        requestDto.setBatchId(batch.getId());
-        requestDto.setInstructorId(10000L);
-        requestDto.setLectureIds(lectureIds);
-
-        ScheduleLecturesResponseDto responseDto = lectureController.scheduleLectures(requestDto);
-
-        assertNotNull(responseDto, "Response should not be null");
-        assertEquals(responseDto.getResponseStatus(), ResponseStatus.FAILURE, "Response status should be failure");
-    }
 }

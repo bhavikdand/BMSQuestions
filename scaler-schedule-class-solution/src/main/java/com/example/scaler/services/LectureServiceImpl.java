@@ -47,7 +47,11 @@ public class LectureServiceImpl implements LectureService{
         Batch batch = scheduledLecture.getBatch();
         BatchLearner batchLearner = batchLearnerRepository.findByBatchIdAndLearnerId(batch.getId(), learnerId).orElseThrow(() -> new UnAuthorizedException("Learner not authorized to access this lecture."));
 
-        if(!scheduledLecture.getLectureStartTime().before(batchLearner.getEntryDate())){
+        if(batchLearner.getEntryDate().after(scheduledLecture.getLectureStartTime())){
+            throw new UnAuthorizedException("Learner not authorized to access this lecture.");
+        }
+
+        if(batchLearner.getExitDate() != null && batchLearner.getExitDate().before(scheduledLecture.getLectureEndTime())){
             throw new UnAuthorizedException("Learner not authorized to access this lecture.");
         }
 
