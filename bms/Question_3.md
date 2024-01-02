@@ -1,5 +1,6 @@
 Design class diagram for a Quick Commerce platform
-Design class diagram for a Quick Commerce platform with the following requirements:
+
+Requirements:
 
 1. There are multiple stores which have items that users need delivered at their doorsteps.
 2. There are multiple delivery partners who can pickup items from a store and deliver it to a user's home.

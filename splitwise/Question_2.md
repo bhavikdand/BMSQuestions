@@ -1,5 +1,6 @@
 Design schema for Splitwise
-Design schema for Splitwise with the following requirements:
+
+Requirements:
 
 1. Users should be able to track their expense with other users.
 2. Users should be able to create groups and start tracking expenses.

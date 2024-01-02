@@ -1,6 +1,6 @@
 Parking Lot Class Diagram
 
-Design a class diagram for a Parking Lot system with the following requirements:
+Requirements:
 
 1. Parking lot will have multiple floors.
 2. There will be multiple entry and exit gates.

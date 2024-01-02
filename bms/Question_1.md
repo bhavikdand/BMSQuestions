@@ -1,5 +1,6 @@
 Design a class diagram for BookMyShow
-Design a class diagram for BookMyShow with the following requirements:
+
+Requirements:
 
 1. We will have multiple cities.
 2. Each city has mulitple theatres.

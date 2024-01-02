@@ -1,5 +1,6 @@
-Design schema for a Restaurant Management System:
-Design schema for a Restaurant Management system with the following requirements:
+Design schema for a Restaurant Management System
+
+Requirements:
 
 1. A restaurant has a name, an address, cuisines served, menu, waiters, chefs.
 2. Cuisines can be Italian, French, Chinese, Japanese, Indian, Continental etc.

@@ -1,6 +1,7 @@
 Design class diagram for an Ecommerce app
 
-Design class diagram for an Ecommerce app with the following requirements:
+Requirements:
+
 1. Registered sellers will list their products with some selling price on the platform.
 2. Registered buyers can add multiple of such products to their cart and buy them by placing an order if all the required products are in stock.
 3. We need to maintain inventory of all the products for each seller.

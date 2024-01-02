@@ -1,5 +1,6 @@
 Design class diagram for Udemy
-Design class diagram for Udemy with the following requirements
+
+Requirements:
 
 1. Instructors can publish their courses by uploading all the course related lectures on the platform.
 2. Each course has multiple modules and each module has multiple lectures.

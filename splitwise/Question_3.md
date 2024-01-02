@@ -1,6 +1,6 @@
 Design class diagram for Scaler
 
-Design class diagram for Scaler with the following requirements:
+Requirements:
 
 1. Learners are grouped together in batches.
 2. Lectures are scheduled for batches and are taken by a instructor.
