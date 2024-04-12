@@ -48,7 +48,7 @@ public class TestCommunicationController {
     public void testBroadcastMessage_UnAuthorizedException(){
         User user = new User();
         user.setName("User 1");
-        user.setUserType(UserType.INSTUCTOR);
+        user.setUserType(UserType.INSTRUCTOR);
         user = userRepository.save(user);
 
         BroadcastMessageRequestDto requestDto = new BroadcastMessageRequestDto();
@@ -66,7 +66,7 @@ public class TestCommunicationController {
     public void testBroadcastMessage_UserNotFound(){
         User user = new User();
         user.setName("User 1");
-        user.setUserType(UserType.INSTUCTOR);
+        user.setUserType(UserType.INSTRUCTOR);
         user = userRepository.save(user);
 
         BroadcastMessageRequestDto requestDto = new BroadcastMessageRequestDto();
