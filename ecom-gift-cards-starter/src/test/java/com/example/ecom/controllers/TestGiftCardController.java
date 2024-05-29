@@ -66,11 +66,11 @@ public class TestGiftCardController {
         assertEquals(redeemGiftCardResponseDto.getResponseStatus(), ResponseStatus.SUCCESS, "Response status should be SUCCESS");
         assertNotNull(redeemGiftCardResponseDto.getGiftCard(), "Gift card shouldn't be null");
         giftCard = redeemGiftCardResponseDto.getGiftCard();
-        assertEquals(giftCard.getAmount(), 900, "Gift card amount should be 900");
+        assertEquals(giftCard.getAmount(), 900, "Gift card pending amount should be 900");
         assertEquals(giftCard.getLedger().size(), 2, "Ledger should have two entries");
         LedgerEntry ledgerEntry = giftCard.getLedger().get(1);
-        assertEquals(ledgerEntry.getAmount(), 100, "Ledger entry amount should be 100");
-        assertEquals(ledgerEntry.getTransactionType(), TransactionType.DEBIT, "Ledger entry transaction type should be DEBIT");
+        assertEquals(ledgerEntry.getAmount(), 100, "2nd ledger entry amount should be 100");
+        assertEquals(ledgerEntry.getTransactionType(), TransactionType.DEBIT, "2nd ledger entry's transaction type should be DEBIT");
 
         redeemGiftCardRequestDto = new RedeemGiftCardRequestDto();
         redeemGiftCardRequestDto.setGiftCardId(giftCard.getId());
@@ -79,11 +79,11 @@ public class TestGiftCardController {
         assertNotNull(redeemGiftCardResponseDto, "Response dto shouldn't be null");
         assertEquals(redeemGiftCardResponseDto.getResponseStatus(), ResponseStatus.SUCCESS, "Response status should be SUCCESS");
         giftCard = redeemGiftCardResponseDto.getGiftCard();
-        assertEquals(giftCard.getAmount(), 0, "Gift card amount should be 0");
+        assertEquals(giftCard.getAmount(), 0, "Gift card pending amount should be 0");
         assertEquals(giftCard.getLedger().size(), 3, "Ledger should have three entries");
         ledgerEntry = giftCard.getLedger().get(2);
-        assertEquals(ledgerEntry.getAmount(), 900, "Ledger entry amount should be 900");
-        assertEquals(ledgerEntry.getTransactionType(), TransactionType.DEBIT, "Ledger entry transaction type should be DEBIT");
+        assertEquals(ledgerEntry.getAmount(), 900, "3rd ledger entry amount should be 900");
+        assertEquals(ledgerEntry.getTransactionType(), TransactionType.DEBIT, "3rd ledger entry transaction type should be DEBIT");
     }
 
     @Test

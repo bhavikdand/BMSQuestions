@@ -36,7 +36,7 @@ We want to build 2 functionalities:
      * Does the gift card exist in the system? If not then we need to throw an exception.
      * Is the gift card expired? If yes then we need to throw an exception.
      * Does the gift card have enough amount to be redeemed? If no then use the entire amount of the gift card, the rest will be paid by the user by some other means.
-     * If all the above checks pass, then we need to create a ledger entry with transaction type as DEBIT, update the ledger entry details and return the updated gift card in response.
+     * If all the above checks pass, then we need to create a ledger entry with transaction type as DEBIT, update the ledger entry details, update the remaining amount in `amount` field and return the updated gift card in response.
 
 ## Instructions
 1. Carefully look at dto package. These classes represent the request and response of the functionality which we want to implement.
