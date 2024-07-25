@@ -257,7 +257,7 @@ public class TestSettleUpController {
             assertEquals(user1, t.getPaidTo(), "User1 should be paid");
             totalAmount += t.getAmount();
         }
-        assertEquals(600, totalAmount, "User 1 should be paid 2600");
+        assertEquals(600, totalAmount, "User 1 should be paid 600");
 
     }
 
