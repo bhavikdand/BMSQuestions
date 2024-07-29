@@ -3,6 +3,7 @@ package com.example.splitwise.controllers;
 import com.example.splitwise.dtos.SettleGroupRequestDto;
 import com.example.splitwise.dtos.SettleGroupResponseDto;
 import com.example.splitwise.dtos.SettleUserRequestDto;
+import com.example.splitwise.dtos.SettleUserResponseDto;
 import com.example.splitwise.models.*;
 import com.example.splitwise.repositories.*;
 import org.junit.jupiter.api.Test;
@@ -247,7 +248,7 @@ public class TestSettleUpController {
 
         SettleUserRequestDto settleUserRequestDto = new SettleUserRequestDto();
         settleUserRequestDto.setUserId(user1.getId());
-        SettleGroupResponseDto responseDto = settleUpController.settleUser(settleUserRequestDto);
+        SettleUserResponseDto responseDto = settleUpController.settleUser(settleUserRequestDto);
         assertNotNull(responseDto, "Response dto should not be null");
         assertNotNull(responseDto.getTransactions(), "Transactions should not be null");
         assertEquals(2, responseDto.getTransactions().size(), "There should be 2 transactions");
@@ -257,7 +258,7 @@ public class TestSettleUpController {
             assertEquals(user1, t.getPaidTo(), "User1 should be paid");
             totalAmount += t.getAmount();
         }
-        assertEquals(600, totalAmount, "User 1 should be paid 2600");
+        assertEquals(600, totalAmount, "User 1 should be paid 600");
 
     }
 
@@ -265,7 +266,7 @@ public class TestSettleUpController {
     public void testSettleUser_UserNotFound() {
         SettleUserRequestDto settleUserRequestDto = new SettleUserRequestDto();
         settleUserRequestDto.setUserId(1);
-        SettleGroupResponseDto responseDto = settleUpController.settleUser(settleUserRequestDto);
+        SettleUserResponseDto responseDto = settleUpController.settleUser(settleUserRequestDto);
 
         assertNotNull(responseDto, "Response dto should not be null");
         assertNull(responseDto.getTransactions(), "Transactions should be null");

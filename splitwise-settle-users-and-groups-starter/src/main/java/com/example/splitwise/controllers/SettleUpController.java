@@ -4,6 +4,7 @@ package com.example.splitwise.controllers;
 import com.example.splitwise.dtos.SettleGroupRequestDto;
 import com.example.splitwise.dtos.SettleGroupResponseDto;
 import com.example.splitwise.dtos.SettleUserRequestDto;
+import com.example.splitwise.dtos.SettleUserResponseDto;
 
 public class SettleUpController {
 
@@ -14,7 +15,7 @@ public class SettleUpController {
         return null;
     }
 
-    public SettleGroupResponseDto settleUser(SettleUserRequestDto requestDto){
+    public SettleUserResponseDto settleUser(SettleUserRequestDto requestDto){
 
         return null;
     }

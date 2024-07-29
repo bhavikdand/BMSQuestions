@@ -1,10 +1,7 @@
 package com.example.splitwise.controllers;
 
 
-import com.example.splitwise.dtos.ResponseStatus;
-import com.example.splitwise.dtos.SettleGroupRequestDto;
-import com.example.splitwise.dtos.SettleGroupResponseDto;
-import com.example.splitwise.dtos.SettleUserRequestDto;
+import com.example.splitwise.dtos.*;
 import com.example.splitwise.models.Transaction;
 import com.example.splitwise.services.SettleUpService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +31,8 @@ public class SettleUpController {
         return responseDto;
     }
 
-    public SettleGroupResponseDto settleUser(SettleUserRequestDto requestDto){
-        SettleGroupResponseDto responseDto = new SettleGroupResponseDto();
+    public SettleUserResponseDto settleUser(SettleUserRequestDto requestDto){
+        SettleUserResponseDto responseDto = new SettleUserResponseDto();
         try{
             List<Transaction> transactions = settleUpService.settleUser(requestDto.getUserId());
             responseDto.setTransactions(transactions);
